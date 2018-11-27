@@ -1,0 +1,7 @@
+baseDir: /Users/zqLuo/Documents/javaworkspace/productivity/lucene
+dataDir: ${baseDir}/data
+logDir: ${baseDir}/log
+
+logging:
+  config: classpath:logback.xml
+  path: ${logDir}
