@@ -11,21 +11,21 @@ import java.util.regex.Pattern;
 public class StringUtils {
 
 	/**
-	 
+	 * 字符串集合用特定字符连接
 	 * @param resource
 	 * @param separator
 	 * @return
 	 */
 	public static String join(List<String> resource, String separator) {
-		StringBuffer result = new StringBuffer("");
+		StringBuffer result = new StringBuffer();
 		if(resource != null && resource.size() > 0) {
 			for(String temp : resource) {
-				result.append(",");
+				result.append(separator);
 				result.append(temp);
 			}
+			return result.substring(result.indexOf(separator)+separator.length(), result.length());
 		}
-		
-		return result.toString().replaceFirst(",","");
+		return null;
 	}
 	
 	/**
