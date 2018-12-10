@@ -12,7 +12,6 @@
         <module>util</module>
         <module>web</module>
         <module>lucene</module>
+        <module>productivity-maven-plugin</module>
     </modules>
-
-
 </project>
