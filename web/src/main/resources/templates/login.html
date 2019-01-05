@@ -22,15 +22,15 @@
     <div class="starter-template">
         <p th:if="${logout}" class="bg-warning">已成功注销</p><!-- 1 -->
         <p th:if="${error}" class="bg-danger">有错误，请重试</p> <!-- 2 -->
-        <h2>数据同步监控</h2>
+        <h2>系统管理</h2>
         <form th:action="@{/login}" method="post">
             <div class="form-group">
                 <label for="username">账号</label>
-                <input type="text" class="form-control" name="username" value="" placeholder="账号" />
+                <input type="text" class="form-control" id="username" name="username" value="" placeholder="账号" />
             </div>
             <div class="form-group">
                 <label for="password">密码</label>
-                <input type="password" class="form-control" name="password" placeholder="密码" />
+                <input type="password" class="form-control" id="password" name="password" placeholder="密码" />
             </div>
             <input type="submit" id="login" value="Login" class="btn btn-primary" />
         </form>
