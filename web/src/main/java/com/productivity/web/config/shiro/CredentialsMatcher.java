@@ -1,5 +1,6 @@
 package com.productivity.web.config.shiro;
 
+import com.productivity.util.MD5Util;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -19,6 +20,6 @@ public class CredentialsMatcher extends SimpleCredentialsMatcher{
         //获得数据库中的密码
         String dbPassword = (String)info.getCredentials();
         //进行密码的比对
-        return this.equals(inPassword, dbPassword);
+        return this.equals(MD5Util.encode(inPassword), dbPassword);
     }
 }

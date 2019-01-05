@@ -18,7 +18,7 @@ import java.util.LinkedHashMap;
  * shiro验证类
  * Created by zqLuo
  */
-//@Configuration
+@Configuration
 public class ShiroConfiguration {
     Logger logger = LoggerFactory.getLogger(ShiroConfiguration.class);
 
@@ -34,7 +34,7 @@ public class ShiroConfiguration {
         bean.setSecurityManager(manager);
         //配置登录的url和登录成功的url
         bean.setLoginUrl("/login");
-        bean.setSuccessUrl("/home");
+        bean.setSuccessUrl("/index");
         //配置访问权限
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         //忽略首页
@@ -46,7 +46,6 @@ public class ShiroConfiguration {
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
         filterChainDefinitionMap.put("/image/**", "anon");
-        filterChainDefinitionMap.put("/tb/**","anon"); //忽略淘宝
 
         filterChainDefinitionMap.put("/*", "authc");//表示需要认证才可以访问
         filterChainDefinitionMap.put("/**", "authc");//表示需要认证才可以访问

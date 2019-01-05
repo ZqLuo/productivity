@@ -1,5 +1,7 @@
 server:
   port: 8080
+  servlet:
+    context-path: /work
 
 spring:
   profiles:
@@ -13,11 +15,11 @@ mybatis:
   type-aliases-package: com.productivity.web.entity # 注意：对应实体类的路径
 
 #pagehelper分页插件
-#pagehelper:
-#  helperDialect: oracle
-#  reasonable: true
-#  supportMethodsArguments: true
-#  params: count=countSql
+pagehelper:
+  helperDialect: oracle
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
 
 #日志
 logging:

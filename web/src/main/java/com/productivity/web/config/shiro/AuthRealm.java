@@ -1,10 +1,12 @@
 package com.productivity.web.config.shiro;
 
 import com.productivity.web.entity.SysUser;
+import com.productivity.web.service.SysUserService;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * AuthRealm完成根据用户名去数据库的查询,并且将用户信息放入shiro中,供第二个类调用.CredentialsMatcher,完成对于密码的校验.其中用户的信息来自shiro
@@ -12,8 +14,8 @@ import org.apache.shiro.subject.PrincipalCollection;
  */
 public class AuthRealm extends AuthorizingRealm {
 
-//    @Autowired
-//    private SysUserService sysUserService;
+    @Autowired
+    private SysUserService sysUserService;
 
     /**
      * 授权的方法是在碰到<shiro:hasPermission>标签的时候调用的,它会去检测shiro框架中的权限(这里的permissions)是否包含有该标签的name值,
@@ -57,7 +59,7 @@ public class AuthRealm extends AuthorizingRealm {
         try {
             UsernamePasswordToken utoken = (UsernamePasswordToken)token;//获取用户输入的token
             String username = utoken.getUsername();
-            SysUser user = new SysUser();
+            SysUser user = sysUserService.findSysUserByLoginName(username);
             if (user != null) {
                 // 若存在，将此用户存放到登录认证info中，无需自己做密码对比，Shiro会为我们进行密码对比校验
                 return new SimpleAuthenticationInfo(user, user.getPassword(),
