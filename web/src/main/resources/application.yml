@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+
+mybatis:
+  mapper-locations: classpath:mapping/*.xml #注意：一定要对应mapper映射xml文件的所在路径
+  type-aliases-package: com.productivity.web.entity # 注意：对应实体类的路径
+
+#pagehelper分页插件
+#pagehelper:
+#  helperDialect: oracle
+#  reasonable: true
+#  supportMethodsArguments: true
+#  params: count=countSql
+
+#日志
+logging:
+  config: classpath:logback.xml
+  path: ../work-log/

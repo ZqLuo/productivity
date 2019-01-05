@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.productivity.web.mapper.WorkAccountStatementDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.productivity.web.entity.WorkAccountStatementDetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="sale_date" property="saleDate" jdbcType="TIMESTAMP" />
+    <result column="trade_name" property="tradeName" jdbcType="VARCHAR" />
+    <result column="unit" property="unit" jdbcType="VARCHAR" />
+    <result column="count" property="count" jdbcType="INTEGER" />
+    <result column="unit_price" property="unitPrice" jdbcType="DOUBLE" />
+    <result column="total_price" property="totalPrice" jdbcType="DOUBLE" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, sale_date, trade_name, unit, count, unit_price, total_price, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from work_account_statement_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from work_account_statement_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.productivity.web.entity.WorkAccountStatementDetail" >
+    insert into work_account_statement_detail (id, sale_date, trade_name, 
+      unit, count, unit_price, 
+      total_price, remark)
+    values (#{id,jdbcType=INTEGER}, #{saleDate,jdbcType=TIMESTAMP}, #{tradeName,jdbcType=VARCHAR}, 
+      #{unit,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER}, #{unitPrice,jdbcType=DOUBLE}, 
+      #{totalPrice,jdbcType=DOUBLE}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.productivity.web.entity.WorkAccountStatementDetail" >
+    insert into work_account_statement_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="saleDate != null" >
+        sale_date,
+      </if>
+      <if test="tradeName != null" >
+        trade_name,
+      </if>
+      <if test="unit != null" >
+        unit,
+      </if>
+      <if test="count != null" >
+        count,
+      </if>
+      <if test="unitPrice != null" >
+        unit_price,
+      </if>
+      <if test="totalPrice != null" >
+        total_price,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="saleDate != null" >
+        #{saleDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tradeName != null" >
+        #{tradeName,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="count != null" >
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="unitPrice != null" >
+        #{unitPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="totalPrice != null" >
+        #{totalPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.productivity.web.entity.WorkAccountStatementDetail" >
+    update work_account_statement_detail
+    <set >
+      <if test="saleDate != null" >
+        sale_date = #{saleDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tradeName != null" >
+        trade_name = #{tradeName,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        unit = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="count != null" >
+        count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="unitPrice != null" >
+        unit_price = #{unitPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="totalPrice != null" >
+        total_price = #{totalPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.productivity.web.entity.WorkAccountStatementDetail" >
+    update work_account_statement_detail
+    set sale_date = #{saleDate,jdbcType=TIMESTAMP},
+      trade_name = #{tradeName,jdbcType=VARCHAR},
+      unit = #{unit,jdbcType=VARCHAR},
+      count = #{count,jdbcType=INTEGER},
+      unit_price = #{unitPrice,jdbcType=DOUBLE},
+      total_price = #{totalPrice,jdbcType=DOUBLE},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.productivity.web.mapper.WorkAccountStatementMapper" >
+  <resultMap id="BaseResultMap" type="com.productivity.web.entity.WorkAccountStatement" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="account_statement_name" property="accountStatementName" jdbcType="VARCHAR" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="from_date" property="fromDate" jdbcType="TIMESTAMP" />
+    <result column="to_date" property="toDate" jdbcType="TIMESTAMP" />
+    <result column="input_time" property="inputTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, account_statement_name, company_name, from_date, to_date, input_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from work_account_statement
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from work_account_statement
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.productivity.web.entity.WorkAccountStatement" >
+    insert into work_account_statement (id, account_statement_name, company_name, 
+      from_date, to_date, input_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{accountStatementName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
+      #{fromDate,jdbcType=TIMESTAMP}, #{toDate,jdbcType=TIMESTAMP}, #{inputTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.productivity.web.entity.WorkAccountStatement" >
+    insert into work_account_statement
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="accountStatementName != null" >
+        account_statement_name,
+      </if>
+      <if test="companyName != null" >
+        company_name,
+      </if>
+      <if test="fromDate != null" >
+        from_date,
+      </if>
+      <if test="toDate != null" >
+        to_date,
+      </if>
+      <if test="inputTime != null" >
+        input_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="accountStatementName != null" >
+        #{accountStatementName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="fromDate != null" >
+        #{fromDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="toDate != null" >
+        #{toDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inputTime != null" >
+        #{inputTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.productivity.web.entity.WorkAccountStatement" >
+    update work_account_statement
+    <set >
+      <if test="accountStatementName != null" >
+        account_statement_name = #{accountStatementName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="fromDate != null" >
+        from_date = #{fromDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="toDate != null" >
+        to_date = #{toDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inputTime != null" >
+        input_time = #{inputTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.productivity.web.entity.WorkAccountStatement" >
+    update work_account_statement
+    set account_statement_name = #{accountStatementName,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      from_date = #{fromDate,jdbcType=TIMESTAMP},
+      to_date = #{toDate,jdbcType=TIMESTAMP},
+      input_time = #{inputTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
