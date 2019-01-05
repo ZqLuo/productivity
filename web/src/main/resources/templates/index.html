@@ -1,10 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>系统管理</title>
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" th:href="@{easyui/themes/bootstrap/easyui.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{easyui/themes/icon.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{css/menu.css}"/>
+    <script type="text/javascript" th:src="@{easyui/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{easyui/jquery.easyui.min.js}"></script>
+    <script type="text/javascript" th:src="@{easyui/easyui-lang-zh_CN.js}"></script>
+    <script type="text/javascript" th:src="@{js/index.js}"></script>
+    <script>
+        /**
+         * 退出登录
+         */
+        function logout() {
+            $.messager.confirm("操作提示", "您确定要退出登录吗？", function (data) {
+                if(data) {
+                    window.location.href = "logout"
+                }
+            });
+        }
+
+        /**
+         * 菜单跳转
+         * @param title
+         * @param url
+         */
+        function toMenu(title,url) {
+            addTab('maintab', title, url);
+        }
+    </script>
 </head>
-<body>
-123123
+<body class="easyui-layout">
+<!--<div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px">north region</div>-->
+<div data-options="region:'west',split:false,title:'导航菜单'" style="width:150px;">
+    <!--<div class="easyui-accordion" style="width:100%;height:100%;">-->
+        <!--<div title="About" data-options="iconCls:'icon-ok'" style="overflow:auto;">-->
+            <!--<div class="menudiv">123</div>-->
+            <!--<div class="menudiv">123</div>-->
+        <!--</div>-->
+        <!--&lt;!&ndash;<div title="Help" data-options="iconCls:'icon-help'" style="padding:10px;">&ndash;&gt;-->
+            <!--&lt;!&ndash;<p>The accordion allows you to provide multiple panels and display one or more at a time. Each panel has built-in support for expanding and collapsing. Clicking on a panel header to expand or collapse that panel body. The panel content can be loaded via ajax by specifying a 'href' property. Users can define a panel to be selected. If it is not specified, then the first panel is taken by default.</p>&ndash;&gt;-->
+        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+    <!--</div>-->
+    <div class="menudiv" onclick="toMenu('商品管理','http://www.baidu.com')">商品管理</div>
+    <div class="menudiv">销售管理</div>
+    <div class="menudiv" onclick="logout()">退出登录</div>
+</div>
+<div data-options="region:'center'">
+    <div class="easyui-tabs" id="maintab" style="width:100%;height:100%">
+        <div title="首页" style="padding:10px">
+            <p style="font-size:14px">首页</p>
+        </div>
+    </div>
+</div>
 </body>
 </html>

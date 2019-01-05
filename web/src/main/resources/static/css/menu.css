@@ -1,0 +1,15 @@
+.menudiv{
+    color: #808080;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-bottom: 1px solid #EFEFEF;
+    cursor: pointer;
+}
+.menudiv:hover{
+    background-color: #EFEFEF;
+}
+
+a{
+    text-decoration: none;
+}
