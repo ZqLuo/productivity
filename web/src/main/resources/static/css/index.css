@@ -13,3 +13,11 @@
 a{
     text-decoration: none;
 }
+
+.formTable{
+
+}
+
+.formTable tr{
+    height: 35px;
+}

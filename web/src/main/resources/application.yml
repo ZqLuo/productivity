@@ -16,7 +16,7 @@ mybatis:
 
 #pagehelper分页插件
 pagehelper:
-  helperDialect: oracle
+  helperDialect: mysql
   reasonable: true
   supportMethodsArguments: true
   params: count=countSql

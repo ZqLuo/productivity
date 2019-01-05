@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta charset="UTF-8"/>
+    <title>商品列表</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/easyui/themes/bootstrap/easyui.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/easyui/themes/icon.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
+    <script type="text/javascript" th:src="@{/easyui/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/easyui/jquery.easyui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/easyui/easyui-lang-zh_CN.js}"></script>
+    <script type="text/javascript" th:src="@{/js/index.js}"></script>
+    <script th:inline="none">
+        var optwidth = 130;
+        var workCommodityListId = "#workCommodityListId";
+        $(function(){
+            $('#addOrUpdDialog').window('close');
+            $(workCommodityListId).datagrid({
+                url:'workCommodityList',
+                width:size.width-20,
+                height:size.height - $('#searchDiv').height() - 20,
+                columns:[[
+                    {field:'opt',title:'操作',width:optwidth-30,align:'center',
+                        formatter:function(value,rowData){
+                            var str = "<a href='javascript:void(0);' onclick='editInfo(\""+rowData.id+"\")'>编辑</a> ";
+                            str += "<a href='javascript:void(0);' onclick='deleteInfo(\""+rowData.id+"\")'>删除</a> ";
+                            return str;
+                        }
+                    },
+                    {field:"id",title:"ID",hidden:true},
+                    {field:"name",title:"商品名称",width:fixWidthWithOptWidth(0.32)},
+                    {field:"price",title:"商品单价",width:fixWidthWithOptWidth(0.32)},
+                    {field:"unit",title:"商品单位",width:fixWidthWithOptWidth(0.32)}
+                ]],
+                pagination : true,
+                rownumbers:true,
+                toolbar: [{
+                    iconCls: 'icon-add',
+                    text: '添加',
+                    handler: function(){
+                        $('#dataId').val("");
+                        $('#name').textbox("setValue", "");
+                        $('#price').textbox("setValue", "");
+                        $('#unit').textbox("setValue", "");
+                        $('#addOrUpdDialog').panel({
+                            title:"添加"
+                        });
+                        $('#addOrUpdDialog').window('open');
+                    }
+                }],
+                onClickRow: function () {
+                    $(workCommodityListId).datagrid('clearSelections');
+                }
+            });
+
+        });
+        /**
+         * 编辑
+         */
+        function editInfo(id) {
+            var rows = $(workCommodityListId).datagrid('getRows');
+            var curRow;
+            $.each(rows,function(i,row){
+                if(id == row.id){
+                    curRow = row;
+                    return false;
+                }
+            });
+            $('#dataId').val(id);
+            $('#name').textbox("setValue", curRow.name);
+            $('#price').textbox("setValue", curRow.price);
+            $('#unit').textbox("setValue", curRow.unit);
+            $('#addOrUpdDialog').panel({
+                title:"编辑"
+            });
+            $('#addOrUpdDialog').window('open');
+        }
+        /**
+         * 删除
+         */
+        function deleteInfo(id) {
+            $.messager.confirm("操作提示", "您确定要删除吗？", function (data) {
+                if(data) {
+                    $.ajax({
+                        url:'delWorkCommodity',
+                        type:'POST',
+                        data : {'id':id},
+                        async : false,
+                        success:function (data) {
+                            var success = data.success;
+                            if(success){
+                                $(workCommodityListId).datagrid('reload');//刷新
+                            }else{
+                                alert(data.msg);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        /**
+         * 添加或更新
+         */
+        function addOrUpdWorkCommodity() {
+            $.messager.confirm("操作提示", "您确定提交？", function (data) {
+                if(data) {
+                    var params = {
+                        'id': $('#dataId').val(),
+                        'name': $('#name').val(),
+                        'price': $('#price').val(),
+                        'unit': $('#unit').val()
+                    };
+                    $.ajax({
+                        url:'addOrUpdWorkCommodity',
+                        type:'POST',
+                        data : params,
+                        async : false,
+                        success:function (data) {
+                            var success = data.success;
+                            if(success){
+                                $('#addOrUpdDialog').window('close');
+                                $(workCommodityListId).datagrid('reload');//刷新
+                            }else{
+                                alert(data.msg);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+</head>
+<body style="overflow: hidden">
+    <div id="searchDiv" style="height: 100px;">
+
+    </div>
+    <div id="listParentDiv" style="overflow: hidden;width: 100%;height: 98%">
+        <table id="workCommodityListId"></table>
+    </div>
+    <!-- 添加或更新对话框 -->
+    <div id="addOrUpdDialog" class="easyui-window" title="Window Layout"
+         data-options="iconCls:'icon-save',collapsible: false, minimizable: false, maximizable: false, resizable: false"
+         style="width:400px;height:300px;display: none;">
+        <input type="hidden" id="dataId"/>
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'center'" style="width: 100%">
+                <form>
+                    <table class="formTable" style="width: 100%">
+                        <tr>
+                            <td style="width: 25%;text-align: right">商品名称:</td>
+                            <td style="width: 75%">
+                                <input id="name" class="easyui-textbox" style="width:80%;height:25px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right">商品单价:</td>
+                            <td>
+                                <input id="price" class="easyui-textbox" style="width:80%;height:25px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right">商品单位:</td>
+                            <td>
+                                <input id="unit" class="easyui-textbox" style="width:80%;height:25px">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="addOrUpdWorkCommodity()" style="width:80px">确定</a>
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:$('#addOrUpdDialog').window('close');" style="width:80px">取消</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

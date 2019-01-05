@@ -10,3 +10,11 @@ function addTab(tabid ,title, url){
         });
     }
 }
+var size = {
+    width : document.documentElement.clientWidth,
+    height : document.documentElement.clientHeight
+}
+
+function fixWidthWithOptWidth(percent) {
+    return  Math.round((Number(size.width-optwidth)) * percent);
+}
