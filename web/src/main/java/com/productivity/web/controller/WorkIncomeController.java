@@ -1,7 +1,9 @@
 package com.productivity.web.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.productivity.web.entity.WorkCustomer;
 import com.productivity.web.entity.WorkIncome;
+import com.productivity.web.service.WorkCustomerService;
 import com.productivity.web.service.WorkIncomeService;
 import com.productivity.web.vo.DataGridReturn;
 import com.productivity.web.vo.ReturnVo;
@@ -9,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -25,13 +28,17 @@ public class WorkIncomeController extends BaseController{
 
 	@Autowired
 	private WorkIncomeService workIncomeService;
+	@Autowired
+	private WorkCustomerService workCustomerService;
 
 	/**
 	 * 进入销售列表页面
 	 * @return
 	 */
 	@RequestMapping("toWorkIncomeIndex")
-	public String toWorkIncomeIndex(){
+	public String toWorkIncomeIndex(Model model){
+		DataGridReturn dataGridReturn = workCustomerService.listWorkCustomer(new WorkCustomer(),null);
+		model.addAttribute("workCustomers", dataGridReturn.getRows());
 		return "workIncome/workIncomeIndex";
 	}
 

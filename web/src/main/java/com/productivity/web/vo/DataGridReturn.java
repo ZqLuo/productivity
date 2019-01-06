@@ -10,11 +10,16 @@ import java.util.List;
  */
 public class DataGridReturn<T> {
 
+    private boolean isPageQuery = false;
+
     public DataGridReturn() {
     }
 
     public DataGridReturn(Pagination pagination) {
-        PageHelper.startPage(pagination.getPage(),pagination.getSize());
+        if(pagination != null){
+            isPageQuery = true;
+            PageHelper.startPage(pagination.getPage(),pagination.getSize());
+        }
     }
 
     public DataGridReturn(int total, List<T> rows) {
@@ -42,11 +47,15 @@ public class DataGridReturn<T> {
     }
 
     public void setPageHelperList(List<T> list) {
-        if(list != null && list.size() > 0){
-            Page<T> page = (Page<T>) list;
-            this.total = (int) page.getTotal();
+        if(isPageQuery){
+            if(list != null && list.size() > 0){
+                Page<T> page = (Page<T>) list;
+                this.total = (int) page.getTotal();
+            }else{
+                this.total = 0;
+            }
         }else{
-            this.total = 0;
+            this.total = list==null?0:list.size();
         }
         this.rows = list;
     }

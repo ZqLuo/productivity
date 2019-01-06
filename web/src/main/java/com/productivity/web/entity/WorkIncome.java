@@ -8,6 +8,7 @@ public class WorkIncome {
     private Date incomeDate;
 
     private String customerName;
+    private Integer customerId;
 
     private Double incomePrice;
 
@@ -62,5 +63,13 @@ public class WorkIncome {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public Integer getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
     }
 }

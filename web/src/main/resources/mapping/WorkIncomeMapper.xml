@@ -4,11 +4,12 @@
   <resultMap id="BaseResultMap" type="com.productivity.web.entity.WorkIncome" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="income_date" property="incomeDate" jdbcType="TIMESTAMP" />
-    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+    <result column="customer_id" property="customerId" jdbcType="INTEGER" />
     <result column="income_price" property="incomePrice" jdbcType="DOUBLE" />
+    <result column="customer_name" property="customerName" jdbcType="DOUBLE" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, income_date, customer_name, income_price
+    id, income_date, customer_id, income_price
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -18,11 +19,12 @@
   </select>
   <select id="listWorkIncome" resultMap="BaseResultMap" parameterType="com.productivity.web.entity.WorkIncome">
     select
-    <include refid="Base_Column_List" />
-    from work_income
+    t.*,t1.customer_name
+    from work_income t
+    left join work_customer t1 on t.customer_id = t1.id
     <where>
       <if test="customerName!=null and customerName!=''">
-        and customer_name like CONCAT('%',#{customerName},'%')
+        and t1.customer_name like CONCAT('%',#{customerName},'%')
       </if>
       <if test="startDate!=null">
         and income_date &gt;= #{startDate}
@@ -38,9 +40,9 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.productivity.web.entity.WorkIncome" >
-    insert into work_income (id, income_date, customer_name, 
+    insert into work_income (id, income_date, customer_id, 
       income_price)
-    values (#{id,jdbcType=INTEGER}, #{incomeDate,jdbcType=TIMESTAMP}, #{customerName,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{incomeDate,jdbcType=TIMESTAMP}, #{customerId,jdbcType=INTEGER}, 
       #{incomePrice,jdbcType=DOUBLE})
   </insert>
   <insert id="insertSelective" parameterType="com.productivity.web.entity.WorkIncome" >
@@ -52,8 +54,8 @@
       <if test="incomeDate != null" >
         income_date,
       </if>
-      <if test="customerName != null" >
-        customer_name,
+      <if test="customerId != null" >
+        customer_id,
       </if>
       <if test="incomePrice != null" >
         income_price,
@@ -66,8 +68,8 @@
       <if test="incomeDate != null" >
         #{incomeDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="customerName != null" >
-        #{customerName,jdbcType=VARCHAR},
+      <if test="customerId != null" >
+        #{customerId,jdbcType=INTEGER},
       </if>
       <if test="incomePrice != null" >
         #{incomePrice,jdbcType=DOUBLE},
@@ -80,8 +82,8 @@
       <if test="incomeDate != null" >
         income_date = #{incomeDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="customerName != null" >
-        customer_name = #{customerName,jdbcType=VARCHAR},
+      <if test="customerId != null" >
+        customer_id = #{customerId,jdbcType=INTEGER},
       </if>
       <if test="incomePrice != null" >
         income_price = #{incomePrice,jdbcType=DOUBLE},
@@ -92,7 +94,7 @@
   <update id="updateByPrimaryKey" parameterType="com.productivity.web.entity.WorkIncome" >
     update work_income
     set income_date = #{incomeDate,jdbcType=TIMESTAMP},
-      customer_name = #{customerName,jdbcType=VARCHAR},
+      customer_id = #{customerId,jdbcType=INTEGER},
       income_price = #{incomePrice,jdbcType=DOUBLE}
     where id = #{id,jdbcType=INTEGER}
   </update>

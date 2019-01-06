@@ -175,3 +175,46 @@ function changeMoneyToChinese( money )
     }
     return ChineseStr;
 }
+
+/**
+ * 校验Combobox输入的文字是否包含在下拉框中，true代表包含，false代表不包含
+ * @param id
+ * @returns {boolean}
+ */
+function checkComboBoxValue(id){
+    var value=$("#"+id).combobox('getValue');
+    var valueField = $("#"+id).combobox("options").valueField;
+    var allData = $("#"+id).combobox("getData");
+    var result = false;
+    for (var i = 0; i < allData.length; i++) {
+        if (value == allData[i][valueField]) {
+            result = true;
+            break;
+        }
+    }
+    return result;
+}
+
+
+
+/**
+ * 给时间框控件扩展一个清除的按钮
+ */
+$.fn.datebox.defaults.cleanText = '清空';
+
+(function ($) {
+    var buttons = $.extend([], $.fn.datebox.defaults.buttons);
+    buttons.splice(1, 0, {
+        text: function (target) {
+            return $(target).datebox("options").cleanText
+        },
+        handler: function (target) {
+            $(target).datebox("setValue", "");
+            $(target).datebox("hidePanel");
+        }
+    });
+    $.extend($.fn.datebox.defaults, {
+        buttons: buttons
+    });
+
+})(jQuery)

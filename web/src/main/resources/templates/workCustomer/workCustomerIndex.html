@@ -24,7 +24,7 @@
                     {field:'opt',title:'操作',width:optwidth-30,align:'center',
                         formatter:function(value,rowData){
                             var str = "<a href='javascript:void(0);' onclick='editInfo(\""+rowData.id+"\")'>编辑</a> ";
-                            str += "<a href='javascript:void(0);' onclick='deleteInfo(\""+rowData.id+"\")'>删除</a> ";
+                            // str += "<a href='javascript:void(0);' onclick='deleteInfo(\""+rowData.id+"\")'>删除</a> ";
                             return str;
                         }
                     },
@@ -114,6 +114,10 @@
          * 添加或更新
          */
         function addOrUpdWorkCustomer() {
+            if($('#customerName').val() == ''){
+                alert('请输入客户名称');
+                return;
+            }
             $.messager.confirm("操作提示", "您确定提交？", function (data) {
                 if(data) {
                     var params = {
