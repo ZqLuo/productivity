@@ -3,12 +3,12 @@
 <mapper namespace="com.productivity.web.mapper.WorkCommodityMapper" >
   <resultMap id="BaseResultMap" type="com.productivity.web.entity.WorkCommodity" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="commodity_name" property="commodityName" jdbcType="VARCHAR" />
     <result column="price" property="price" jdbcType="VARCHAR" />
     <result column="unit" property="unit" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, price, unit
+    id, commodity_name, price, unit
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -16,19 +16,24 @@
     from work_commodity
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="listWorkCommodity" resultMap="BaseResultMap" parameterType="com.productivity.web.entity.WorkCommodity">
-    select
-    <include refid="Base_Column_List" />
-    from work_commodity
-  </select>
+    <select id="listWorkCommodity" resultMap="BaseResultMap" parameterType="com.productivity.web.entity.WorkCommodity">
+        select
+        <include refid="Base_Column_List" />
+        from work_commodity
+        <where>
+            <if test="commodityName!=null and commodityName!=''">
+                commodity_name like CONCAT('%',#{commodityName},'%')
+            </if>
+        </where>
+    </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from work_commodity
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.productivity.web.entity.WorkCommodity" >
-    insert into work_commodity (id, name, price, 
+    insert into work_commodity (id, commodity_name, price, 
       unit)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{price,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{commodityName,jdbcType=VARCHAR}, #{price,jdbcType=VARCHAR}, 
       #{unit,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.productivity.web.entity.WorkCommodity" >
@@ -37,8 +42,8 @@
       <if test="id != null" >
         id,
       </if>
-      <if test="name != null" >
-        name,
+      <if test="commodityName != null" >
+        commodity_name,
       </if>
       <if test="price != null" >
         price,
@@ -51,8 +56,8 @@
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
+      <if test="commodityName != null" >
+        #{commodityName,jdbcType=VARCHAR},
       </if>
       <if test="price != null" >
         #{price,jdbcType=VARCHAR},
@@ -65,8 +70,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.productivity.web.entity.WorkCommodity" >
     update work_commodity
     <set >
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
+      <if test="commodityName != null" >
+        commodity_name = #{commodityName,jdbcType=VARCHAR},
       </if>
       <if test="price != null" >
         price = #{price,jdbcType=VARCHAR},
@@ -79,7 +84,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.productivity.web.entity.WorkCommodity" >
     update work_commodity
-    set name = #{name,jdbcType=VARCHAR},
+    set commodity_name = #{commodityName,jdbcType=VARCHAR},
       price = #{price,jdbcType=VARCHAR},
       unit = #{unit,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}

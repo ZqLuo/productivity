@@ -20,7 +20,7 @@ public class BaseController {
      */
     public Pagination getPagination(){
         String page = request.getParameter("page");
-        String size = request.getParameter("size");
+        String size = request.getParameter("rows");
         if(StringUtils.isEmpty(page)){
             page = "1";
         }

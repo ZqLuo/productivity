@@ -3,7 +3,7 @@ package com.productivity.web.entity;
 public class WorkCommodity {
     private Integer id;
 
-    private String name;
+    private String commodityName;
 
     private String price;
 
@@ -17,12 +17,12 @@ public class WorkCommodity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getCommodityName() {
+        return commodityName;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+    public void setCommodityName(String commodityName) {
+        this.commodityName = commodityName == null ? null : commodityName.trim();
     }
 
     public String getPrice() {

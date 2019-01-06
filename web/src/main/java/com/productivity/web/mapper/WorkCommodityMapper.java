@@ -18,7 +18,7 @@ public interface WorkCommodityMapper {
     int updateByPrimaryKey(WorkCommodity record);
 
     /**
-     * 查询商品列表
+     * 查询商品集合
      * @param workCommodity
      * @return
      */
