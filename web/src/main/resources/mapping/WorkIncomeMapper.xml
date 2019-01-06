@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.productivity.web.mapper.WorkIncomeMapper" >
+  <resultMap id="BaseResultMap" type="com.productivity.web.entity.WorkIncome" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="income_date" property="incomeDate" jdbcType="TIMESTAMP" />
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+    <result column="income_price" property="incomePrice" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, income_date, customer_name, income_price
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from work_income
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="listWorkIncome" resultMap="BaseResultMap" parameterType="com.productivity.web.entity.WorkIncome">
+    select
+    <include refid="Base_Column_List" />
+    from work_income
+    <where>
+      <if test="customerName!=null and customerName!=''">
+        and customer_name like CONCAT('%',#{customerName},'%')
+      </if>
+      <if test="startDate!=null">
+        and income_date &gt;= #{startDate}
+      </if>
+      <if test="endDate!=null">
+        and income_date &lt;= #{endDate}
+      </if>
+    </where>
+    order by income_date desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from work_income
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.productivity.web.entity.WorkIncome" >
+    insert into work_income (id, income_date, customer_name, 
+      income_price)
+    values (#{id,jdbcType=INTEGER}, #{incomeDate,jdbcType=TIMESTAMP}, #{customerName,jdbcType=VARCHAR}, 
+      #{incomePrice,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.productivity.web.entity.WorkIncome" >
+    insert into work_income
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="incomeDate != null" >
+        income_date,
+      </if>
+      <if test="customerName != null" >
+        customer_name,
+      </if>
+      <if test="incomePrice != null" >
+        income_price,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="incomeDate != null" >
+        #{incomeDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerName != null" >
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="incomePrice != null" >
+        #{incomePrice,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.productivity.web.entity.WorkIncome" >
+    update work_income
+    <set >
+      <if test="incomeDate != null" >
+        income_date = #{incomeDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerName != null" >
+        customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="incomePrice != null" >
+        income_price = #{incomePrice,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.productivity.web.entity.WorkIncome" >
+    update work_income
+    set income_date = #{incomeDate,jdbcType=TIMESTAMP},
+      customer_name = #{customerName,jdbcType=VARCHAR},
+      income_price = #{incomePrice,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

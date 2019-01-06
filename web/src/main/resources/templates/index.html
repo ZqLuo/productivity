@@ -9,7 +9,7 @@
     <script type="text/javascript" th:src="@{easyui/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{easyui/jquery.easyui.min.js}"></script>
     <script type="text/javascript" th:src="@{easyui/easyui-lang-zh_CN.js}"></script>
-    <script type="text/javascript" th:src="@{js/index.js}"></script>
+    <script type="text/javascript" th:src="@{js/index.js?5}"></script>
     <script>
         /**
          * 退出登录
@@ -45,6 +45,7 @@
         <!--&lt;!&ndash;</div>&ndash;&gt;-->
     <!--</div>-->
     <div class="menudiv" onclick="toMenu('商品管理','workCommodity/toWorkCommodityIndex')">商品管理</div>
+    <div class="menudiv" onclick="toMenu('销售管理','workIncome/toWorkIncomeIndex')">销售管理</div>
     <div class="menudiv" onclick="toMenu('客户管理','workCustomer/toWorkCustomerIndex')">客户管理</div>
     <div class="menudiv" onclick="toMenu('系统用户','sysUser/toSysUserIndex')">系统用户</div>
     <!--<div class="menudiv">销售管理</div>-->
