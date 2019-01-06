@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta charset="UTF-8"/>
+    <title>客户列表</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/easyui/themes/bootstrap/easyui.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/easyui/themes/icon.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
+    <script type="text/javascript" th:src="@{/easyui/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/easyui/jquery.easyui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/easyui/easyui-lang-zh_CN.js}"></script>
+    <script type="text/javascript" th:src="@{/js/index.js}"></script>
+    <script th:inline="none">
+        var optwidth = 130;
+        var datagridListId = "#datagridListId";
+        $(function(){
+            $('#addOrUpdDialog').window('close');
+            $(datagridListId).datagrid({
+                url:'workCustomerList',
+                width:size.width-20,
+                height:size.height - $('#searchDiv').height() - 20,
+                columns:[[
+                    {field:'opt',title:'操作',width:optwidth-30,align:'center',
+                        formatter:function(value,rowData){
+                            var str = "<a href='javascript:void(0);' onclick='editInfo(\""+rowData.id+"\")'>编辑</a> ";
+                            str += "<a href='javascript:void(0);' onclick='deleteInfo(\""+rowData.id+"\")'>删除</a> ";
+                            return str;
+                        }
+                    },
+                    {field:"id",title:"ID",hidden:true},
+                    {field:"customerName",title:"客户名称",width:fixWidthWithOptWidth(0.30)},
+                    {field:"tel",title:"联系电话",width:fixWidthWithOptWidth(0.30)},
+                    {field:"address",title:"地址",width:fixWidthWithOptWidth(0.30)}
+
+                ]],
+                pagination : true,
+                rownumbers:true,
+                toolbar: [{
+                    iconCls: 'icon-add',
+                    text: '添加',
+                    handler: function(){
+                        $('#dataId').val("");
+                        $('#customerName').textbox("setValue", "");
+                        $('#tel').textbox("setValue", "");
+                        $('#address').textbox("setValue", "");
+                        $('#addOrUpdDialog').panel({
+                            title:"添加"
+                        });
+                        $('#addOrUpdDialog').window('open');
+                    }
+                }],
+                onClickRow: function () {
+                    $(datagridListId).datagrid('clearSelections');
+                }
+            });
+        });
+        /**
+         * 查询
+         */
+        function search() {
+            var queryParams = {
+                "customerName":$('#search_customerName').val()
+
+            };
+            $(datagridListId).datagrid('load',queryParams);
+        }
+        /**
+         * 编辑
+         */
+        function editInfo(id) {
+            var rows = $(datagridListId).datagrid('getRows');
+            var curRow;
+            $.each(rows,function(i,row){
+                if(id == row.id){
+                    curRow = row;
+                    return false;
+                }
+            });
+            $('#dataId').val(id);
+            $('#customerName').textbox("setValue", curRow.customerName);
+            $('#tel').textbox("setValue", curRow.tel);
+            $('#address').textbox("setValue", curRow.address);
+            $('#addOrUpdDialog').panel({
+                title:"编辑"
+            });
+            $('#addOrUpdDialog').window('open');
+        }
+        /**
+         * 删除
+         */
+        function deleteInfo(id) {
+            $.messager.confirm("操作提示", "您确定要删除吗？", function (data) {
+                if(data) {
+                    $.ajax({
+                        url:'delWorkCustomer',
+                        type:'POST',
+                        data : {'id':id},
+                        async : false,
+                        success:function (data) {
+                            var success = data.success;
+                            if(success){
+                                $(datagridListId).datagrid('reload');//刷新
+                            }else{
+                                alert(data.msg);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        /**
+         * 添加或更新
+         */
+        function addOrUpdWorkCustomer() {
+            $.messager.confirm("操作提示", "您确定提交？", function (data) {
+                if(data) {
+                    var params = {
+                        'id': $('#dataId').val(),
+                        'customerName': $('#customerName').val(),
+                        'tel': $('#tel').val(),
+                        'address': $('#address').val()
+
+                    };
+                    $.ajax({
+                        url:'addOrUpdWorkCustomer',
+                        type:'POST',
+                        data : params,
+                        async : false,
+                        success:function (data) {
+                            var success = data.success;
+                            if(success){
+                                $('#addOrUpdDialog').window('close');
+                                reset();//刷新
+                            }else{
+                                alert(data.msg);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        /**
+         * 重置
+         */
+        function reset() {
+            $('#search_customerName').textbox("setValue", "");
+            search();
+        }
+    </script>
+</head>
+<body style="overflow: hidden">
+    <div id="searchDiv" style="height: 50px;">
+        <table>
+            <tr>
+                <td style="text-align: right">客户名称&nbsp;</td>
+                <td>
+                    <input id="search_customerName" class="easyui-textbox" style="width:180px;height:25px">
+                </td>
+                <td onclick="search()">
+                    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
+                </td>
+                <td>
+                    <a href="#" onclick="reset();" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">重置</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="listParentDiv" style="overflow: hidden;width: 100%;height: 98%">
+        <table id="datagridListId"></table>
+    </div>
+    <!-- 添加或更新对话框 -->
+    <div id="addOrUpdDialog" class="easyui-window" title="Window Layout"
+         data-options="iconCls:'icon-save',collapsible: false, minimizable: false, maximizable: false, resizable: false,modal:true"
+         style="width:400px;height:300px;display: none;">
+        <input type="hidden" id="dataId"/>
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'center'" style="width: 100%">
+                <form>
+                    <table class="formTable" style="width: 100%">
+                        <tr>
+                            <td style="width: 25%;text-align: right">客户名称:</td>
+                            <td style="width: 75%">
+                                <input id="customerName" class="easyui-textbox" style="width:80%;height:25px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 25%;text-align: right">联系电话:</td>
+                            <td style="width: 75%">
+                                <input id="tel" class="easyui-textbox" style="width:80%;height:25px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 25%;text-align: right">地址:</td>
+                            <td style="width: 75%">
+                                <input id="address" class="easyui-textbox" style="width:80%;height:25px">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="addOrUpdWorkCustomer()" style="width:80px">确定</a>
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:$('#addOrUpdDialog').window('close');" style="width:80px">取消</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

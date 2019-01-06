@@ -1,7 +1,7 @@
 package com.productivity.web.tool;
 
 import com.productivity.util.StringUtils;
-import com.productivity.web.entity.SysUser;
+import com.productivity.web.entity.WorkCustomer;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,11 +20,18 @@ public class GenerateCode {
     private static String parentPath = "/Users/zqLuo/Desktop/generateCode";
 
 
-    private static String name = "用户";
-    private static Class clazz = SysUser.class;
-    private static String tableName = "sys_user";
+    private static String name = "客户";
+    private static Class clazz = WorkCustomer.class;
+    private static String tableName = "work_customer";
     private static String dataBase = "work";
+    /**
+     * 排除显示字段
+     */
     private static Map<String,String> excludeMap = new HashMap();
+    /**
+     * 需要的查询字段
+     */
+    private static Map<String,String> searchMap = new HashMap<>();
 
     private static String className = clazz.getSimpleName();
     private static String smallFirst = getMethodName(className);
@@ -34,10 +41,17 @@ public class GenerateCode {
 
     public static void main(String[] args) {
         try {
+            File parentFile = new File(parentPath);
+            if(parentFile.listFiles() != null){
+                for(File file : parentFile.listFiles()){
+                    file.delete();
+                }
+            }
             excludeMap.put("id","");
-            excludeMap.put("password","");
-//            generateService();
-//            generateServiceImpl();
+            searchMap.put("customerName","");
+//            excludeMap.put("password","");
+            generateService();
+            generateServiceImpl();
             generateController();
             generatePage();
         } catch (Exception e){
@@ -160,6 +174,7 @@ public class GenerateCode {
                 "        function search() {\n" +
                 "            var queryParams = {\n");
      for(Map<String,String> map : mapList) {
+         if(searchMap.get(map.get("camelName"))==null)continue;
      str.append("                \""+map.get("camelName")+"\":$('#search_"+map.get("camelName")+"').val(),\n");
      }
         str = new StringBuilder(removeLastComma(str.toString())).append("\n");
@@ -247,6 +262,7 @@ public class GenerateCode {
                 "         */\n" +
                 "        function reset() {\n");
      for(Map<String,String> map : mapList) {
+         if(searchMap.get(map.get("camelName"))==null)continue;
      str.append("            $('#search_"+map.get("camelName")+"').textbox(\"setValue\", \"\");\n");
      }
      str.append("            search();\n" +
@@ -258,6 +274,7 @@ public class GenerateCode {
                 "        <table>\n" +
                 "            <tr>\n");
      for(Map<String,String> map : mapList) {
+         if(searchMap.get(map.get("camelName"))==null)continue;
      str.append("                <td style=\"text-align: right\">"+map.get("column_comment")+"&nbsp;</td>\n");
      str.append("                <td>\n");
      str.append("                    <input id=\"search_"+map.get("camelName")+"\" class=\"easyui-textbox\" style=\"width:180px;height:25px\">\n");
@@ -555,6 +572,6 @@ public class GenerateCode {
 
     public static String removeLastComma(String str){
         int index = str.lastIndexOf(",");
-        return str.substring(1,index) + str.substring(index+1);
+        return str.substring(0,index) + str.substring(index+1);
     }
 }
