@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="UTF-8"/>
-    <title>商品列表</title>
+    <title>用户列表</title>
     <link rel="stylesheet" type="text/css" th:href="@{/easyui/themes/bootstrap/easyui.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/easyui/themes/icon.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
@@ -13,11 +13,11 @@
     <script type="text/javascript" th:src="@{/js/index.js}"></script>
     <script th:inline="none">
         var optwidth = 130;
-        var workCommodityListId = "#workCommodityListId";
+        var datagridListId = "#datagridListId";
         $(function(){
             $('#addOrUpdDialog').window('close');
-            $(workCommodityListId).datagrid({
-                url:'workCommodityList',
+            $(datagridListId).datagrid({
+                url:'sysUserList',
                 width:size.width-20,
                 height:size.height - $('#searchDiv').height() - 20,
                 columns:[[
@@ -29,9 +29,9 @@
                         }
                     },
                     {field:"id",title:"ID",hidden:true},
-                    {field:"commodityName",title:"商品名称",width:fixWidthWithOptWidth(0.32)},
-                    {field:"price",title:"商品单价",width:fixWidthWithOptWidth(0.32)},
-                    {field:"unit",title:"商品单位",width:fixWidthWithOptWidth(0.32)}
+                    {field:"loginName",title:"登录名",width:fixWidthWithOptWidth(0.45)},
+                    {field:"userName",title:"用户名",width:fixWidthWithOptWidth(0.45)}
+
                 ]],
                 pagination : true,
                 rownumbers:true,
@@ -40,9 +40,8 @@
                     text: '添加',
                     handler: function(){
                         $('#dataId').val("");
-                        $('#commodityName').textbox("setValue", "");
-                        $('#price').textbox("setValue", "");
-                        $('#unit').textbox("setValue", "");
+                        $('#loginName').textbox("setValue", "");
+                        $('#userName').textbox("setValue", "");
                         $('#addOrUpdDialog').panel({
                             title:"添加"
                         });
@@ -50,7 +49,7 @@
                     }
                 }],
                 onClickRow: function () {
-                    $(workCommodityListId).datagrid('clearSelections');
+                    $(datagridListId).datagrid('clearSelections');
                 }
             });
         });
@@ -59,15 +58,17 @@
          */
         function search() {
             var queryParams = {
-                "commodityName":$('#search_commodityName').val()
+                "loginName":$('#search_loginName').val(),
+                "userName":$('#search_userName').val()
+
             };
-            $(workCommodityListId).datagrid('load',queryParams);
+            $(datagridListId).datagrid('load',queryParams);
         }
         /**
          * 编辑
          */
         function editInfo(id) {
-            var rows = $(workCommodityListId).datagrid('getRows');
+            var rows = $(datagridListId).datagrid('getRows');
             var curRow;
             $.each(rows,function(i,row){
                 if(id == row.id){
@@ -76,9 +77,8 @@
                 }
             });
             $('#dataId').val(id);
-            $('#commodityName').textbox("setValue", curRow.commodityName);
-            $('#price').textbox("setValue", curRow.price);
-            $('#unit').textbox("setValue", curRow.unit);
+            $('#loginName').textbox("setValue", curRow.loginName);
+            $('#userName').textbox("setValue", curRow.userName);
             $('#addOrUpdDialog').panel({
                 title:"编辑"
             });
@@ -91,14 +91,14 @@
             $.messager.confirm("操作提示", "您确定要删除吗？", function (data) {
                 if(data) {
                     $.ajax({
-                        url:'delWorkCommodity',
+                        url:'delSysUser',
                         type:'POST',
                         data : {'id':id},
                         async : false,
                         success:function (data) {
                             var success = data.success;
                             if(success){
-                                $(workCommodityListId).datagrid('reload');//刷新
+                                $(datagridListId).datagrid('reload');//刷新
                             }else{
                                 alert(data.msg);
                             }
@@ -111,17 +111,17 @@
         /**
          * 添加或更新
          */
-        function addOrUpdWorkCommodity() {
+        function addOrUpdSysUser() {
             $.messager.confirm("操作提示", "您确定提交？", function (data) {
                 if(data) {
                     var params = {
                         'id': $('#dataId').val(),
-                        'commodityName': $('#commodityName').val(),
-                        'price': $('#price').val(),
-                        'unit': $('#unit').val()
+                        'loginName': $('#loginName').val(),
+                        'userName': $('#userName').val()
+
                     };
                     $.ajax({
-                        url:'addOrUpdWorkCommodity',
+                        url:'addOrUpdSysUser',
                         type:'POST',
                         data : params,
                         async : false,
@@ -142,7 +142,8 @@
          * 重置
          */
         function reset() {
-            $('#search_commodityName').textbox("setValue", "");
+            $('#search_loginName').textbox("setValue", "");
+            $('#search_userName').textbox("setValue", "");
             search();
         }
     </script>
@@ -151,9 +152,13 @@
     <div id="searchDiv" style="height: 50px;">
         <table>
             <tr>
-                <td style="text-align: right">商品名称&nbsp;</td>
+                <td style="text-align: right">登录名&nbsp;</td>
                 <td>
-                    <input id="search_commodityName" class="easyui-textbox" style="width:180px;height:25px">
+                    <input id="search_loginName" class="easyui-textbox" style="width:180px;height:25px">
+                </td>
+                <td style="text-align: right">用户名&nbsp;</td>
+                <td>
+                    <input id="search_userName" class="easyui-textbox" style="width:180px;height:25px">
                 </td>
                 <td onclick="search()">
                     <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
@@ -165,7 +170,7 @@
         </table>
     </div>
     <div id="listParentDiv" style="overflow: hidden;width: 100%;height: 98%">
-        <table id="workCommodityListId"></table>
+        <table id="datagridListId"></table>
     </div>
     <!-- 添加或更新对话框 -->
     <div id="addOrUpdDialog" class="easyui-window" title="Window Layout"
@@ -177,28 +182,22 @@
                 <form>
                     <table class="formTable" style="width: 100%">
                         <tr>
-                            <td style="width: 25%;text-align: right">商品名称:</td>
+                            <td style="width: 25%;text-align: right">登录名:</td>
                             <td style="width: 75%">
-                                <input id="commodityName" class="easyui-textbox" style="width:80%;height:25px">
+                                <input id="loginName" class="easyui-textbox" style="width:80%;height:25px">
                             </td>
                         </tr>
                         <tr>
-                            <td style="text-align: right">商品单价:</td>
-                            <td>
-                                <input id="price" class="easyui-numberbox" data-options="min:0,precision:2" style="width:80%;height:25px">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right">商品单位:</td>
-                            <td>
-                                <input id="unit" class="easyui-textbox" style="width:80%;height:25px">
+                            <td style="width: 25%;text-align: right">用户名:</td>
+                            <td style="width: 75%">
+                                <input id="userName" class="easyui-textbox" style="width:80%;height:25px">
                             </td>
                         </tr>
                     </table>
                 </form>
             </div>
             <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
-                <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="addOrUpdWorkCommodity()" style="width:80px">确定</a>
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="addOrUpdSysUser()" style="width:80px">确定</a>
                 <a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:$('#addOrUpdDialog').window('close');" style="width:80px">取消</a>
             </div>
         </div>

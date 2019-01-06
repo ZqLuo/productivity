@@ -22,7 +22,19 @@
     from sys_user
     where login_name = #{loginName}
   </select>
-
+  <select id="listSysUser" resultMap="BaseResultMap" parameterType="com.productivity.web.entity.SysUser">
+    select
+    <include refid="Base_Column_List" />
+    from sys_user
+    <where>
+      <if test="loginName!=null and loginName!=''">
+        and login_name like CONCAT('%',#{loginName},'%')
+      </if>
+      <if test="userName!=null and userName!=''">
+        and user_name like CONCAT('%',#{userName},'%')
+      </if>
+    </where>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sys_user
     where id = #{id,jdbcType=INTEGER}

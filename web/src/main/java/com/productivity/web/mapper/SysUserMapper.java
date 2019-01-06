@@ -3,6 +3,8 @@ package com.productivity.web.mapper;
 import com.productivity.web.entity.SysUser;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface SysUserMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -22,4 +24,11 @@ public interface SysUserMapper {
      * @return
      */
     SysUser findSysUserByLoginName(@Param("loginName") String loginName);
+
+    /**
+     * 获取系统用户集合
+     * @param sysUser
+     * @return
+     */
+    List<SysUser> listSysUser(SysUser sysUser);
 }
