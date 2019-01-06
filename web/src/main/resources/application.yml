@@ -9,6 +9,8 @@ spring:
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
+  jackson:
+    time-zone: GMT+8
 
 mybatis:
   mapper-locations: classpath:mapping/*.xml #注意：一定要对应mapper映射xml文件的所在路径
