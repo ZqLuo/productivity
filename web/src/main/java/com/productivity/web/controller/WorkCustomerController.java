@@ -87,10 +87,16 @@ public class WorkCustomerController extends BaseController{
 	public ReturnVo addOrUpdWorkCustomer(WorkCustomer workCustomer){
 		ReturnVo returnVo = new ReturnVo();
 		try {
-			if(workCustomer.getId() != null){
-				workCustomerService.updateWorkCustomer(workCustomer);
+			WorkCustomer oldWorkCustomer = workCustomerService.getWorkCustomerByNameWithoutId(workCustomer.getCustomerName(),workCustomer.getId());
+			if(oldWorkCustomer != null){
+				returnVo.setSuccess(false);
+				returnVo.setMsg("客户名称已存在");
 			}else{
-				workCustomerService.addWorkCustomer(workCustomer);
+				if(workCustomer.getId() != null){
+					workCustomerService.updateWorkCustomer(workCustomer);
+				}else{
+					workCustomerService.addWorkCustomer(workCustomer);
+				}
 			}
 		}catch (Exception e){
 			logger.error("addOrUpdWorkCustomer:[" + JSON.toJSONString(workCustomer) + "]",e);

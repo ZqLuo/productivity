@@ -43,4 +43,12 @@ public interface WorkCustomerService {
 	 */
 	void updateWorkCustomer(WorkCustomer workCustomer);
 
+	/**
+	 * 根据姓名且ID不等于传入的ID获取用户
+	 * @param customerName
+	 * @param notId 非必填
+	 * @return
+	 */
+	WorkCustomer getWorkCustomerByNameWithoutId(String customerName,Integer notId);
+
 }

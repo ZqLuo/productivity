@@ -1,6 +1,7 @@
 package com.productivity.web.mapper;
 
 import com.productivity.web.entity.WorkCustomer;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,4 +24,12 @@ public interface WorkCustomerMapper {
      * @return
      */
     List<WorkCustomer> listWorkCustomer(WorkCustomer workCustomer);
+
+    /**
+     * 根据姓名且ID不等于传入的ID获取用户
+     * @param customerName
+     * @param notId 非必填
+     * @return
+     */
+    WorkCustomer getWorkCustomerByNameWithoutId(@Param("customerName") String customerName, @Param("notId") Integer notId);
 }

@@ -26,6 +26,15 @@
       </if>
     </where>
   </select>
+  <select id="getWorkCustomerByNameWithoutId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from work_customer
+    where customer_name = #{customerName}
+    <if test="notId != null">
+      and id != #{notId}
+    </if>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from work_customer
     where id = #{id,jdbcType=INTEGER}

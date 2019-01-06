@@ -46,4 +46,9 @@ public class WorkCustomerServiceImpl implements WorkCustomerService {
 		workCustomerMapper.updateByPrimaryKeySelective(workCustomer);
 	}
 
+	@Override
+	public WorkCustomer getWorkCustomerByNameWithoutId(String customerName, Integer notId) {
+		return workCustomerMapper.getWorkCustomerByNameWithoutId(customerName,notId);
+	}
+
 }
