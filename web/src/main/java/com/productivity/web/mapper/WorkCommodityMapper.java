@@ -1,6 +1,7 @@
 package com.productivity.web.mapper;
 
 import com.productivity.web.entity.WorkCommodity;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,4 +24,11 @@ public interface WorkCommodityMapper {
      * @return
      */
     List<WorkCommodity> listWorkCommodity(WorkCommodity workCommodity);
+
+    /**
+     * 根据商品名称获取商品
+     * @param commodityName
+     * @return
+     */
+    WorkCommodity getWorkCommodityByCommodityName(@Param("commodityName") String commodityName);
 }

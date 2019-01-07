@@ -85,10 +85,21 @@ public class WorkCommodityController extends BaseController{
     public ReturnVo addOrUpdWorkCommodity(WorkCommodity workCommodity){
         ReturnVo returnVo = new ReturnVo();
         try {
+            WorkCommodity oldWorkCommodity = workCommodityService.getWorkCommodityByCommodityName(workCommodity.getCommodityName());
             if(workCommodity.getId() != null){
-                workCommodityService.updateWorkCommodity(workCommodity);
+                if(oldWorkCommodity != null && oldWorkCommodity.getId() == workCommodity.getId()){
+                    workCommodityService.updateWorkCommodity(workCommodity);
+                }else{
+                    returnVo.setSuccess(false);
+                    returnVo.setMsg("商品名称已存在");
+                }
             }else{
-                workCommodityService.addWorkCommodity(workCommodity);
+                if(oldWorkCommodity == null){
+                    workCommodityService.addWorkCommodity(workCommodity);
+                }else{
+                    returnVo.setSuccess(false);
+                    returnVo.setMsg("商品名称已存在");
+                }
             }
         }catch (Exception e){
             logger.error("addOrUpdWorkCommodity:[" + JSON.toJSONString(workCommodity) + "]",e);

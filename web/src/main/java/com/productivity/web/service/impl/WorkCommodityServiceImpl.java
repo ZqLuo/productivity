@@ -45,4 +45,9 @@ public class WorkCommodityServiceImpl implements WorkCommodityService {
     public void updateWorkCommodity(WorkCommodity workCommodity) {
         workCommodityMapper.updateByPrimaryKey(workCommodity);
     }
+
+    @Override
+    public WorkCommodity getWorkCommodityByCommodityName(String commodityName) {
+        return workCommodityMapper.getWorkCommodityByCommodityName(commodityName);
+    }
 }

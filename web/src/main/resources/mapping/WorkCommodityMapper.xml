@@ -26,6 +26,12 @@
             </if>
         </where>
     </select>
+  <select id="getWorkCommodityByCommodityName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from work_commodity
+    where commodity_name = #{commodityName}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from work_commodity
     where id = #{id,jdbcType=INTEGER}

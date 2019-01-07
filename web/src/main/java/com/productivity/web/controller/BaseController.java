@@ -21,11 +21,8 @@ public class BaseController {
     public Pagination getPagination(){
         String page = request.getParameter("page");
         String size = request.getParameter("rows");
-        if(StringUtils.isEmpty(page)){
-            page = "1";
-        }
-        if(StringUtils.isEmpty(size)){
-            size = "20";
+        if(StringUtils.isEmpty(page) && StringUtils.isEmpty(size)){
+            return null;
         }
         return new Pagination(Integer.parseInt(page), Integer.parseInt(size));
     }

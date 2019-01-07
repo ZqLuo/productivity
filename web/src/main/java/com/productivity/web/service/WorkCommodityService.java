@@ -38,4 +38,11 @@ public interface WorkCommodityService {
      * @param workCommodity
      */
     void updateWorkCommodity(WorkCommodity workCommodity);
+
+    /**
+     * 根据商品名称获取商品
+     * @param commodityName
+     * @return
+     */
+    WorkCommodity getWorkCommodityByCommodityName(String commodityName);
 }
