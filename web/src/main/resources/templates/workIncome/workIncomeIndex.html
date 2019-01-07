@@ -12,10 +12,14 @@
     <script type="text/javascript" th:src="@{/easyui/easyui-lang-zh_CN.js}"></script>
     <script type="text/javascript" th:src="@{/js/index.js?25}"></script>
     <script th:inline="none">
-        var optwidth = 130;
+        var optwidth = 160;
         var datagridListId = "#datagridListId";
+        var curIncomeId = 0;
+        var editIndex = undefined; //销售详细正在编辑的行数
+        var commodityArray; //所有商品信息
         $(function(){
             $('#addOrUpdDialog').window('close');
+            $('#detailDialog').window('close');
             $(datagridListId).datagrid({
                 url:'workIncomeList',
                 width:size.width-20,
@@ -25,6 +29,8 @@
                         formatter:function(value,rowData){
                             var str = "<a href='javascript:void(0);' onclick='editInfo(\""+rowData.id+"\")'>编辑</a> ";
                             str += "<a href='javascript:void(0);' onclick='deleteInfo(\""+rowData.id+"\")'>删除</a> ";
+                            str += "<a href='javascript:void(0);' onclick='detailInfo(\""+rowData.id+"\")'>详情</a> ";
+                            str += "<a href='javascript:void(0);' onclick='exportInfo(\""+rowData.id+"\")'>导出</a> ";
                             return str;
                         }
                     },
@@ -63,13 +69,84 @@
                     $(datagridListId).datagrid('clearSelections');
                 }
             });
+            //获取所有商品
+            $.ajax({
+                url:'../workCommodity/workCommodityList',
+                type:'POST',
+                async : false,
+                success:function (data) {
+                    commodityArray = data.rows;
+                }
+            });
+
+            $.ajax({
+                url:'../workCommodity/workCommodityList',
+                type:'POST',
+                async : false,
+                success:function (data) {
+                    commodityArray = data.rows;
+                }
+            });
+            /**
+             * 销售详细列表
+             */
+            $('#detailListId').datagrid({
+                url:'workIncomeDetailList',
+                rownumbers:true,
+                width: $('#detailDialog').width()-3,
+                height: $('#detailDialog').height() - 42,
+                singleSelect:true,
+                idField:'id',
+                columns:[[
+                    {field:'id',title:'Item ID',hidden:true},
+                    {field:"commodityId",title:"商品名称",width:'40%',
+                        formatter:function(value,rowData){
+                            return rowData.commodityName;
+                        },
+                        editor:{
+                            type:'combobox',
+                            options:{
+                                valueField:'id',
+                                textField:'commodityName',
+                                data:commodityArray,
+                                required:true
+                            }
+                        }
+                    },
+                    {field:"onePrice",title:"单价",width:'20%',
+                        editor:{
+                            type:'numberbox',
+                            options:{
+                                precision:2,
+                                min:0
+                            }
+
+                        }
+                    },
+                    {field:"count",title:"数量",width:'20%',
+                        editor:{
+                            type:'numberbox',
+                            options:{
+                                min:0
+                            }
+                        }
+                    },
+                    {field:"totalPrice",title:"合计",width:'20%'}
+                ]],
+                toolbar: '#tb',
+                onClickRow: function (index,row) {
+                    onClickRow(index);
+                }
+            });
         });
+
         /**
          * 查询
          */
         function search() {
+            var customerName = $('#search_customerName').combobox('getText');
             var queryParams = {
-                "customerName":$('#search_customerName').val()
+                "customerName": customerName=='全部'?'':customerName
             };
             if($('#search_startDate').val() != ''){
                 queryParams['startDate'] = strToDate($('#search_startDate').val());
@@ -171,8 +248,29 @@
         function reset() {
             $('#search_startDate').textbox("setValue", "");
             $('#search_endDate').textbox("setValue", "");
-            $('#search_customerName').textbox("setValue", "");
+            $('#search_customerName').combobox('setValue', '-1');
             search();
+        }
+
+        /**
+         * 销售详情
+         */
+        function detailInfo(id) {
+            curIncomeId = id;
+            var queryParams = {
+                "incomeId": curIncomeId
+            };
+            editIndex = undefined;
+            $("#detailListId").datagrid('load',queryParams);
+            $('#detailDialog').window('open');
+        }
+
+        function getCommodityName(id) {
+            var name = '';
+            for(var i=0;i<commodityArray.length;i++){
+                alert(commodityArray[i].id);
+            }
+            return name;
         }
     </script>
 </head>
@@ -188,7 +286,10 @@
                 </td>
                 <td style="text-align: right">客户名称&nbsp;</td>
                 <td>
-                    <input id="search_customerName" class="easyui-textbox" style="width:180px;height:25px">
+                    <select id="search_customerName" class="easyui-combobox" name="state" style="width:80%;height:25px">
+                        <option value="-1">全部</option>
+                        <option th:each="customer:${workCustomers}" th:text="${customer.customerName}" th:value="${customer.id}"></option>
+                    </select>
                 </td>
                 <td onclick="search()">
                     <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
@@ -229,7 +330,7 @@
                         <tr>
                             <td style="width: 25%;text-align: right">销售总价:</td>
                             <td style="width: 75%">
-                                <input id="incomePrice" class="easyui-textbox" style="width:80%;height:25px">
+                                <input id="incomePrice" data-options="editable:false" class="easyui-textbox" style="width:80%;height:25px">
                             </td>
                         </tr>
                     </table>
@@ -241,5 +342,109 @@
             </div>
         </div>
     </div>
+    <!--详情对话框-->
+    <div id="detailDialog" class="easyui-window" title="销售详情"
+         data-options="iconCls:'icon-save',collapsible: false, minimizable: false, maximizable: false, resizable: false,modal:true"
+         style="width:650px;height:400px;display: none;">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'center'" style="width: 100%">
+                <table id="detailListId"></table>
+
+                <div id="tb" style="height:auto">
+                    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="append()">添加</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" onclick="removeit()">删除</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="reject()">回退</a>
+                    <!--<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="getChanges()">GetChanges</a>-->
+                </div>
+
+            </div>
+            <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-save'" href="javascript:void(0)" onclick="accept();" style="width:80px">保存</a>
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:$('#detailDialog').window('close');" style="width:80px">取消</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        var editIndex = undefined;
+        function endEditing(){
+            if (editIndex == undefined){return true}
+            if ($('#detailListId').datagrid('validateRow', editIndex)){
+                var ed = $('#detailListId').datagrid('getEditor', {index:editIndex,field:'commodityId'});
+                var commodityName = $(ed.target).combobox('getText');
+                $('#detailListId').datagrid('getRows')[editIndex]['commodityName'] = commodityName;
+                $('#detailListId').datagrid('endEdit', editIndex);
+
+                $('#detailListId').datagrid('acceptChanges');
+                var row = $('#detailListId').datagrid('getRows')[editIndex];
+                if(row['onePrice'] != '' && row['count'] != ''){
+                    row['totalPrice'] = row['onePrice'] * row['count'];
+                }else{
+                    row['totalPrice'] = '0';
+                }
+                $('#detailListId').datagrid('refreshRow', editIndex);
+                editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        }
+        function onClickRow(index){
+            if (editIndex != index){
+                if (endEditing()){
+                    $('#detailListId').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    editIndex = index;
+                } else {
+                    $('#detailListId').datagrid('selectRow', editIndex);
+                }
+            }
+        }
+        function append(){
+            if (endEditing()){
+                $('#detailListId').datagrid('appendRow',{status:'P'});
+                editIndex = $('#detailListId').datagrid('getRows').length-1;
+                $('#detailListId').datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+            }
+        }
+        function removeit(){
+            if (editIndex == undefined){return}
+            $('#detailListId').datagrid('deleteRow', editIndex);
+            editIndex = undefined;
+        }
+        function accept(){
+            if (endEditing()){
+                var rows = $('#detailListId').datagrid('getRows');
+                if(rows.length > 0){
+                    $.ajax({
+                        url:'saveWorkIncomeDetail',
+                        type:'POST',
+                        data : {
+                            'detailJson' : JSON.stringify(rows),
+                            'incomeId' : curIncomeId
+                        },
+                        async : false,
+                        success:function (data) {
+                            var success = data.success;
+                            if(success){
+                                $('#detailDialog').window('close');
+                                reset();//刷新
+                            }else{
+                                alert(data.msg);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+        function reject(){
+            $('#detailListId').datagrid('rejectChanges');
+            editIndex = undefined;
+        }
+        function getChanges(){
+            var rows = $('#detailListId').datagrid('getChanges');
+            alert(rows.length+' rows are changed!');
+        }
+    </script>
 </body>
 </html>

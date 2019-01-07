@@ -1,8 +1,11 @@
 package com.productivity.web.service;
 
 import com.productivity.web.entity.WorkIncome;
+import com.productivity.web.entity.WorkIncomeDetail;
 import com.productivity.web.vo.DataGridReturn;
 import com.productivity.web.vo.Pagination;
+
+import java.util.List;
 
 /**
  * 销售接口
@@ -42,5 +45,18 @@ public interface WorkIncomeService {
 	 * @param workIncome
 	 */
 	void updateWorkIncome(WorkIncome workIncome);
+
+	/**
+	 * 保存销售详细
+	 * @param incomeId
+	 * @param workIncomeDetailList
+	 */
+	void saveWorkIncomeDetail(Integer incomeId, List<WorkIncomeDetail> workIncomeDetailList);
+
+	/**
+	 * 获取所有销售详细信息
+	 * @param incomeId
+	 */
+	List<WorkIncomeDetail> listWorkIncomeDetail(Integer incomeId);
 
 }

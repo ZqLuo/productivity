@@ -6,7 +6,7 @@
     <result column="income_date" property="incomeDate" jdbcType="TIMESTAMP" />
     <result column="customer_id" property="customerId" jdbcType="INTEGER" />
     <result column="income_price" property="incomePrice" jdbcType="DOUBLE" />
-    <result column="customer_name" property="customerName" jdbcType="DOUBLE" />
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, income_date, customer_id, income_price
