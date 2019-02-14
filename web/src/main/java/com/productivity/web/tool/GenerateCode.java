@@ -18,12 +18,17 @@ import java.util.Date;
 public class GenerateCode {
 
     private static String parentPath = "/Users/zqLuo/Desktop/generateCode";
+    private static String column_name = "column_name";
+    private static String camelName = "camelName";
+    private static String column_comment = "column_comment";
+    private static String data_type = "data_type";
 
-
-    private static String name = "客户";
+    private static String name = "用户操作日志表";
     private static Class clazz = WorkCustomer.class;
-    private static String tableName = "work_customer";
-    private static String dataBase = "work";
+    private static String tableName = "Operate_Log";
+    private static String dataBase = "ydzw";
+    private static String entityName = "OperateLog";
+    private static String packageName = "com.free.mobile.model";
     /**
      * 排除显示字段
      */
@@ -42,21 +47,75 @@ public class GenerateCode {
     public static void main(String[] args) {
         try {
             File parentFile = new File(parentPath);
-            if(parentFile.listFiles() != null){
-                for(File file : parentFile.listFiles()){
-                    file.delete();
+            if(parentFile.exists()){
+                if(parentFile.listFiles() != null){
+                    for(File file : parentFile.listFiles()){
+                        file.delete();
+                    }
                 }
+            }else {
+                parentFile.mkdir();
             }
-            excludeMap.put("id","");
-            searchMap.put("customerName","");
-//            excludeMap.put("password","");
-            generateService();
-            generateServiceImpl();
-            generateController();
-            generatePage();
+//            excludeMap.put("id","");
+//            searchMap.put("customerName","");
+////            excludeMap.put("password","");
+//            generateService();
+//            generateServiceImpl();
+//            generateController();
+//            generatePage();
+            generateEntity();
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 生成对象
+     */
+    private static void generateEntity() throws Exception{
+        List<Map<String,String>> list = readColumnName(tableName,dataBase);
+        File serviceFile = new File(GenerateCode.parentPath+File.separator+entityName+".java");
+        BufferedWriter writer = new BufferedWriter(new FileWriter(serviceFile));
+        writer.write("package "+packageName +";\n\n");
+        writer.write("import javax.persistence.Column;\n");
+        writer.write("import javax.persistence.Entity;\n");
+        writer.write("import javax.persistence.Table;\n");
+        writer.write("import java.util.Date;\n\n");
+        writer.write("/**\n");
+        writer.write(" * " + name + "\n");
+        writer.write(" */\n");
+        writer.write("@Entity\n");
+        writer.write("@Table(name = \"" + tableName + "\")\n");
+        writer.write("public class " + entityName + " {\n");
+        StringBuilder method = new StringBuilder();
+        for(Map<String,String> map : list){
+            String typeName;
+            String camelNameIn = map.get(camelName);
+            if(map.get(data_type).toLowerCase().equals("datetime")){
+                typeName = "Date";
+            }else if (map.get(data_type).toLowerCase().equals("int")){
+                typeName = "Integer";
+            }else {
+                typeName = "String";
+            }
+            writer.write("\t/**\n");
+            writer.write("\t * " + map.get(column_comment) + "\n");
+            writer.write("\t */\n");
+            writer.write("\tprivate " + typeName + " " + camelNameIn + ";\n");
+            //setmethod
+            method.append("\tpublic void ").append(StringUtils.setMethodName(camelNameIn))
+                    .append("(").append(typeName).append(" ").append(camelNameIn).append(") {\n")
+                    .append("\t\tthis.").append(camelNameIn).append(" = ").append(camelNameIn).append(";\n\t}\n\n");
+            //getmethod
+            method.append("\t@Column(name = \"" + map.get(column_name) + "\")\n");
+            method.append("\tpublic ").append(typeName).append(" ").append(StringUtils.getMethodName(camelNameIn)).append("() {\n")
+                    .append("\t\treturn ").append(camelNameIn).append(";\n\t}\n\n");
+        }
+        writer.newLine();
+        writer.write(method.toString());
+        writer.write("}");
+        writer.flush();
+        writer.close();
     }
 
     /**
@@ -65,7 +124,7 @@ public class GenerateCode {
      */
     public static Connection getConnection() throws SQLException {
         if(GenerateCode.connection == null){
-            String url = "jdbc:mysql://127.0.0.1:3306/work?characterEncoding=utf8";
+            String url = "jdbc:mysql://127.0.0.1:3306/ydzw?characterEncoding=utf8";
             String username = "root";
             String password = "111111";
             GenerateCode.connection = DriverManager.getConnection(url, username, password);
@@ -81,7 +140,7 @@ public class GenerateCode {
     public static List<Map<String,String>> readColumnName(String tableName,String dataBase) throws Exception {
         List<Map<String,String>> resultMap = new ArrayList<>();
         //定义sql语句
-        String sql = "select column_name,column_comment from INFORMATION_SCHEMA.Columns where table_name=? and table_schema=?";
+        String sql = "select column_name,column_comment,data_type from INFORMATION_SCHEMA.Columns where table_name=? and table_schema=?";
         //获取预编译对象
         PreparedStatement ps = getConnection().prepareStatement(sql);
         ps.setString(1,tableName);
@@ -90,10 +149,10 @@ public class GenerateCode {
         ResultSet rs = ps.executeQuery();
         while (rs.next()){
             Map<String,String> map = new HashMap<>();
-
-            map.put("column_name",rs.getString("column_name"));
-            map.put("camelName", StringUtils.underline2Camel(map.get("column_name")));
-            map.put("column_comment",rs.getString("column_comment"));
+            map.put(column_name,rs.getString("column_name"));
+            map.put(camelName, StringUtils.underline2Camel(map.get("column_name")));
+            map.put(column_comment,rs.getString("column_comment"));
+            map.put(data_type,rs.getString("data_type"));
             if(excludeMap.get(map.get("column_name")) == null){
                 resultMap.add(map);
             }

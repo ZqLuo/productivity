@@ -164,6 +164,18 @@ public class StringUtils {
 	}
 
 	/**
+	 * 把一个字符串的第一个字母大写、效率是最高的
+	 * @param fildeName
+	 * @return
+	 * @throws Exception
+	 */
+	public static String setMethodName(String fildeName) throws Exception {
+		byte[] items = fildeName.getBytes();
+		items[0] = (byte) ((char) items[0] - 'a' + 'A');
+		return "set" + new String(items);
+	}
+
+	/**
 	 * 获取详细的异常链信息--精准定位异常位置
 	 *
 	 * @param ex
