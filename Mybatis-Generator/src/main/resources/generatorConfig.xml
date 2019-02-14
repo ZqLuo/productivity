@@ -4,9 +4,10 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
     <!-- 数据库驱动:选择你的本地硬盘上面的数据库驱动包-->
-    <!--location="/myfile/m2/Repository/mysql/mysql-connector-java/5.1.25/mysql-connector-java-5.1.25.jar"-->
+
+    <!--location="/myfile/m2/Repository/com/oracle/ojdbc6/11.2.0.4.0/ojdbc6-11.2.0.4.0.jar"-->
     <classPathEntry
-            location="/myfile/m2/Repository/com/oracle/ojdbc6/11.2.0.4.0/ojdbc6-11.2.0.4.0.jar"
+        location="/myfile/m2/Repository/mysql/mysql-connector-java/5.1.25/mysql-connector-java-5.1.25.jar"
     />
     <context id="DB2Tables"  targetRuntime="MyBatis3">
         <commentGenerator>
@@ -15,26 +16,26 @@
             <property name="suppressAllComments" value="true"/>
         </commentGenerator>
         <!--数据库链接URL，用户名、密码 mysql -->
-        <!--<jdbcConnection-->
-        <!--driverClass="com.mysql.jdbc.Driver"-->
-        <!--connectionURL="数据库连接"-->
-        <!--userId="用户名"-->
-        <!--password="密码">-->
-        <!--</jdbcConnection>-->
+        <jdbcConnection
+                driverClass="com.mysql.jdbc.Driver"
+                connectionURL="jdbc:mysql://127.0.0.1:3306/ydzw?useUnicode=true"
+                userId="root"
+                password="111111">
+        </jdbcConnection>
 
         <!--数据库链接URL，用户名、密码 oracle -->
-        <jdbcConnection
-                driverClass="oracle.jdbc.driver.OracleDriver"
-                connectionURL="jdbc:oracle:thin:@172.16.130.135:1521:orcl"
-                userId="middleserver"
-                password="middle">
-        </jdbcConnection>
+        <!--<jdbcConnection-->
+                <!--driverClass="oracle.jdbc.driver.OracleDriver"-->
+                <!--connectionURL="jdbc:oracle:thin:@172.16.130.135:1521:orcl"-->
+                <!--userId="middleserver"-->
+                <!--password="middle">-->
+        <!--</jdbcConnection>-->
 
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
         <!-- 生成模型的包名和位置-->
-        <javaModelGenerator targetPackage="com.gfs.middleserver.entity" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.free.mobile.model" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -48,15 +49,15 @@
         </javaClientGenerator>
         <!-- 要生成的表 tableName是数据库中的表名或视图名 domainObjectName是实体类名-->
         <table
-                tableName="LLHIT"
-                domainObjectName="LLHit"
+                tableName="Interface_Log"
+                domainObjectName="InterfaceLog"
                 enableCountByExample="false"
                 enableUpdateByExample="false"
                 enableDeleteByExample="false"
                 enableSelectByExample="false"
                 selectByExampleQueryId="false"
         >
-            <generatedKey  type="pre"  column="uuid" sqlStatement="select sys_guid() from dual"></generatedKey>
+
         </table>
     </context>
 </generatorConfiguration>
